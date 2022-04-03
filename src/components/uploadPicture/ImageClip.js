@@ -1,4 +1,3 @@
-import { AutoComplete } from "antd";
 import React from "react";
 import Axios from "../../utils/axios";
 import { message } from "antd";
@@ -7,11 +6,10 @@ class ImageClip extends React.Component {
     constructor(props) {
         super(props);
 
-        let winW = document.documentElement.clientWidth;
-        let W = (winW - 250) * 0.5,
-            H = W * 9 / 16,
+        let W = this.props.width,
+            H = this.props.height,
             MW = W * 0.9,
-            MH = MW * 9 / 16,
+            MH = MW * this.props.height / this.props.width,
             ML = (W - MW) / 2,
             MT = (H - MH) / 2;
 
@@ -19,15 +17,14 @@ class ImageClip extends React.Component {
             W, H, MW, MH, ML, MT,
             S: false,
             MouseDown: false,
-            url:"",
+            url: "",
         }
     }
     render() {
         let { W, H, MW, MH, MT, ML, S } = this.state
+        //console.log(this.props)
         return (
-            <div className='clipImageBox' style={{
-                position: "relative"
-            }}>
+            <div className='clipImageBox' style={{ position: "relative" }}>
                 <div className='canvasBoxDiv'
                     onMouseDown={
                         ev => {
@@ -56,8 +53,7 @@ class ImageClip extends React.Component {
                             this.setState({ MouseDown: false });
                         }
                     }
-                    style={{ borderStyle: "solid" }}
-                >
+                    style={{ borderStyle: "solid" }}>
                     <canvas className='canvasBox'
                         ref={x => this._canvas = x}
                         width={W}
@@ -105,7 +101,7 @@ class ImageClip extends React.Component {
                             //console.log(this.canvasToFile(canvas2));
                             const formData = new FormData()
                             formData.append("file", this.canvasToFile(canvas2));
-                            formData.append('type', "topic")
+                            formData.append('type', this.props.type)
                             this.setState({
                                 uploading: true
                             })
@@ -113,7 +109,7 @@ class ImageClip extends React.Component {
                                 res => {
                                     //console.log(res.data);
                                     if (res.data.code === 200) {
-                                        this.setState({url: res.data.content.urls[0]})
+                                        this.setState({ url: res.data.content.urls[0] })
                                         //this.props.change(canvas2.toDataURL(),this.state.url);
                                         this.props.change(this.state.url);
                                         message.success("图片上传成功");
@@ -130,7 +126,7 @@ class ImageClip extends React.Component {
                                     }
                                 }
                             ).catch(error => { console.log("axios error ", error); })
-                            
+
                         }
                     }>保存图片</button>
                     <button onClick={() => {

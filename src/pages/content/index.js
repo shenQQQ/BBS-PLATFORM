@@ -1,14 +1,14 @@
 import React from 'react'
 import Axios from "../../utils/axios"
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import { Image } from 'antd';
+import { Image, message } from 'antd';
 import { ContentWrapper } from './style';
 import { Avatar } from 'antd';
 import { StarOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { Comment, List } from 'antd';
 import getDateDiff from "../../utils/getDateDiff"
+import { PlatformUrl } from '../../config/config';
+import { withRouter } from 'react-router-dom';
 
 class Content extends React.Component {
 
@@ -23,18 +23,23 @@ class Content extends React.Component {
     componentDidMount() {
         Axios.get(this.props.location.pathname)
             .then(res => {
-                //console.log(res.data.content.comments)
-                this.setState({ id: res.data.content.id })
-                this.setState({ content: res.data.content.content })
-                this.setState({ head_img: res.data.content.headImg })
-                this.setState({ title: res.data.content.title })
-                this.setState({ avatar: res.data.content.avatar })
-                this.setState({ inTime: res.data.content.inTime })
-                this.setState({ commentCount: res.data.content.commentCount })
-                this.setState({ collectCount: res.data.content.collectCount })
-                this.setState({ view: res.data.content.view })
-                this.setState({ username: res.data.content.username })
-                this.setState({ comment: res.data.content.comments })
+                if (res.data.code === 200) {
+                    //console.log(res.data.content.comments)
+                    this.setState({ id: res.data.content.id })
+                    this.setState({ content: res.data.content.content })
+                    this.setState({ head_img: res.data.content.headImg })
+                    this.setState({ title: res.data.content.title })
+                    this.setState({ avatar: res.data.content.avatar })
+                    this.setState({ inTime: res.data.content.inTime })
+                    this.setState({ commentCount: res.data.content.commentCount })
+                    this.setState({ collectCount: res.data.content.collectCount })
+                    this.setState({ view: res.data.content.view })
+                    this.setState({ username: res.data.content.username })
+                    this.setState({ comment: res.data.content.comments })
+                }else{
+                    message.error(res.data.message);
+                    window.location.href = PlatformUrl;
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -47,7 +52,6 @@ class Content extends React.Component {
                 <div className='article_head'>
                     <div className='article_title'>
                         <h1>{this.state.title}</h1>
-
                         <div className='description'>
                             <Avatar src={this.state.avatar} />
 
@@ -70,7 +74,7 @@ class Content extends React.Component {
                         <p><small>本文系发布者投稿，文章内容不代表本站观点</small></p>
                     </div>
                     {/* <ReactMarkdown children={this.state.content} remarkPlugins={[remarkGfm]} /> */}
-                    <div dangerouslySetInnerHTML={{ __html:this.state.content }} />
+                    <div dangerouslySetInnerHTML={{ __html: this.state.content }} />
                     <Button icon={<StarOutlined />} >&nbsp;&nbsp;{this.state.collectCount}&nbsp;&nbsp;</Button>
                     <br />
                     <hr />
@@ -98,4 +102,4 @@ class Content extends React.Component {
         );
     }
 }
-export default Content;
+export default withRouter(Content);

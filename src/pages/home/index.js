@@ -4,6 +4,7 @@ import RecommendBlock from '../../components/recommend_block';
 import Card_list from '../../components/card_list';
 import Axios from '../../utils/axios';
 import { Pagination } from 'antd';
+import { INDEX_PAGE_SIZE } from '../../config/config';
 
 class Home extends React.Component {
 
@@ -46,7 +47,7 @@ class Home extends React.Component {
                                 .catch(error => {
                                     console.log(error);
                                 });
-                        }} justify="center" pageSize={15} />
+                        }} justify="center" pageSize={INDEX_PAGE_SIZE} />
                     </div>
                 </div>
             </HomeWrapper>

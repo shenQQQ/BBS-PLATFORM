@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../../actions/authActions";
 import { withRouter } from "react-router-dom";
+import { PlatformUrl } from "../../config/config";
 
 const { SubMenu } = Menu;
 
@@ -17,7 +18,7 @@ const onSearch = value => {
         message.error("搜索词不能为空");
         return;
     }
-    window.location.href = "http://localhost:3000/searchPage?keywords=" + value;
+    window.location.href = PlatformUrl + "/searchPage?keywords=" + value;
 };
 
 class Header extends React.Component {

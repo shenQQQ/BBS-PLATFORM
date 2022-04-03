@@ -1,8 +1,8 @@
-import { message } from 'antd';
 import axios from 'axios';
+import { LocalStorageTokenName, ServerUrl} from '../config/config';
 
 const Axios = axios.create({
-    baseURL: 'http://localhost:8080'
+    baseURL: ServerUrl
 });
 
 Axios.interceptors.response.use(
@@ -10,12 +10,9 @@ Axios.interceptors.response.use(
         //console.log(res);
         // 如果返回的code是311，则表示token有问题，直接把登录信息清除
         if (res.data && res.data.code === 311) {
-            localStorage.removeItem("BBSToken");
+            localStorage.removeItem(LocalStorageTokenName);
             window.location.reload();
         } 
-        else if (res.data.code !== 200) {
-            message.error(res.data.message)
-        }
         return res;
     }
 );

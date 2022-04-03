@@ -7,6 +7,7 @@ import setHeaderToken from "../../utils/setHeaderToken";
 import { addFlashMessage } from "../../actions/flashMessageActions";
 import { setCurrentUser } from "../../actions/authActions";
 import { store } from "../../const/store";
+import { LocalStorageTokenName } from "../../config/config";
 
 //todo: 替换掉flashMessage
 class LoginForm extends React.Component {
@@ -32,7 +33,7 @@ class LoginForm extends React.Component {
             isLoading: true
 
         });
-        this.props.login(this.state).then((res) => {    
+        this.props.login(this.state).then((res) => {
             if (res.data.code !== 200) {
                 this.props.addFlashMessage(
                     {
@@ -43,7 +44,7 @@ class LoginForm extends React.Component {
                 this.setState({ errors: res.data.message, isLoading: false })
             } else {
                 const token = res.data.content.token;
-                localStorage.setItem("BBSToken", token);
+                localStorage.setItem(LocalStorageTokenName, token);
                 setHeaderToken(token);
                 //console.log("res " , res.data.content);
                 this.props.addFlashMessage(

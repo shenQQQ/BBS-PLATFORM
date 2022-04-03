@@ -4,6 +4,7 @@ import { Menu } from 'antd'
 import { AppstoreFilled, HomeFilled, RocketFilled, ThunderboltFilled } from '@ant-design/icons';
 import { SideBarWrapper } from "./style";
 import { Link } from "react-router-dom";
+import { ProjectName } from "../../config/config";
 
 const { SubMenu } = Menu;
 const Side_bar = () => (
@@ -11,7 +12,7 @@ const Side_bar = () => (
         <div className="side_bar">
             <Link to="/home">
                 <span className="side_bar_logo">
-                    Simple-BBS
+                    {ProjectName}
                 </span>
             </Link>
             <Menu

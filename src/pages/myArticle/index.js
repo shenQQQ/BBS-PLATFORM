@@ -6,6 +6,7 @@ import { HomeWrapper } from '../home/style';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
+import { MY_ARTICLE_PAGE_SIZE, PlatformUrl } from '../../config/config';
 
 class MyArticle extends React.Component {
 
@@ -30,7 +31,7 @@ class MyArticle extends React.Component {
     render() {
         if (!this.props.userState.isAuth) {
             message.error("请先登录!")
-            window.location.href = "http://localhost:3000"
+            window.location.href = PlatformUrl
         }
         return (
             <HomeWrapper>
@@ -53,7 +54,7 @@ class MyArticle extends React.Component {
                                 .catch(error => {
                                     console.log(error);
                                 });
-                        }} justify="center" pageSize={15} />
+                        }} justify="center" pageSize={MY_ARTICLE_PAGE_SIZE} />
                     </div>
                 </div>
             </HomeWrapper>

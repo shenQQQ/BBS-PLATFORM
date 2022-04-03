@@ -3,6 +3,7 @@ import Card_list from '../../components/card_list';
 import Axios from "../../utils/axios";
 import { Pagination } from 'antd';
 import { HomeWrapper } from '../home/style';
+import { SEARCH_PAGE_SIZE } from '../../config/config';
 
 function getUrlParam(name) {
     var url = window.location.search; //获取url中"?"符后的字串   
@@ -58,7 +59,7 @@ class SearchPage extends React.Component {
                                 .catch(error => {
                                     console.log(error);
                                 });
-                        }} justify="center" pageSize={15} />
+                        }} justify="center" pageSize={SEARCH_PAGE_SIZE} />
                     </div>
                 </div>
             </HomeWrapper>
