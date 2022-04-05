@@ -14,7 +14,8 @@ import LoginPage from './pages/loginPage';
 import authByLocalStorageToken from './utils/authByLocalStorageToken';
 import MyArticle from './pages/myArticle';
 import MyCollect from './pages/myCollect';
-import Contribution from './pages/contribution';
+import Create from './pages/create';
+import edit from './pages/edit';
 
 const mainStyle = {
   margin: '0 0 0 250px',
@@ -44,7 +45,8 @@ class App extends React.Component {
             <Route path="/login" component={LoginPage}></Route>
             <Route path="/myArticle" component={MyArticle}></Route>
             <Route path="/myCollect" component={MyCollect}></Route>
-            <Route path="/contribution" component={Contribution}></Route>
+            <Route path="/create" component={Create}></Route>
+            <Route path="/edit" component={edit}></Route>
           </div>
         </div>
       </Router>

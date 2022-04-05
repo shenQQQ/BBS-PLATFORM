@@ -39,8 +39,8 @@ class MyCollect extends React.Component {
                     <PageHeader
                         className="site-page-header"
                         onBack={() => {window.history.back(-1)}}
-                        title="收藏的文章"
-                    />,
+                        title= {this.props.userState.user.username + "收藏的文章"}
+                    />
                     <Card_list data={this.state.data} />
                     <div className='pagination'>
                         <Pagination showQuickJumper defaultCurrent={1} total={this.state.total} onChange={(pageNumber) => {

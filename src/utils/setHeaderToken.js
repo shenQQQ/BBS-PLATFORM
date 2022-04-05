@@ -1,10 +1,10 @@
 import axios from "axios";
 import Axios from "./axios";
 
-const setHeaderToken = (token) =>{
-    if(token){
+const setHeaderToken = (token) => {
+    if (token) {
         Axios.defaults.headers.common['Authorization'] = token;
-    }else{
+    } else {
         delete Axios.defaults.headers.common['Authorization'];
     }
 }

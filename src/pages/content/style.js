@@ -38,4 +38,10 @@ export const ContentWrapper = styled.div`
 .statement{
     color: grey;
 }
+.modify{
+    margin-top:40px;
+}
+a{
+    color: black;
+}
 `

@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { message } from 'antd';
 
 class SignupForm extends React.Component {
 
@@ -23,6 +24,10 @@ class SignupForm extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault();
+        if (this.state.password !== this.state.repeat_password) {
+            message.error("两次密码不一致");
+            return;
+        }
         this.setState({
             isLoading: true
         });
@@ -46,10 +51,9 @@ class SignupForm extends React.Component {
                 this.props.history.replace("/");
             }
 
-        })
-            .catch(error => {
-                console.log(error);
-            });
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     render() {

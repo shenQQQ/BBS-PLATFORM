@@ -54,7 +54,7 @@ class Header extends React.Component {
         const logined = (
             <Menu className="after-login" onClick={this.handleClick} selectedKeys={[current]} mode="horizontal" style={{ height: 60, width: 174 }}>
                 <Menu.Item key="contribution" icon={<BookOutlined />}>
-                    <Link to="/contribution">投稿</Link>
+                    <Link to="/create">投稿</Link>
                 </Menu.Item>
                 <SubMenu key="user" icon={<Avatar src={<Image src={this.props.userState.isAuth ? this.props.userState.user.avatar : null} size="small" />} />}>
                     <Menu.Item key="myArticle"><Link to="/myArticle">文章</Link></Menu.Item>

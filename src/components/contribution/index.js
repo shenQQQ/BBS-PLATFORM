@@ -2,9 +2,11 @@ import { message, Button, Input } from 'antd';
 import React from "react";
 import E from 'wangeditor';
 import Axios from "../../utils/axios"
-import { ContentWrapper } from "../content/style";
-import UploadPicture from '../../components/uploadPicture';
+import { ContentWrapper } from "../../pages/content/style";
+import UploadPicture from '../uploadPicture';
 import { ServerUrl, MAX_UPLOAD_FILE_NUM, MAX_UPLOAD_IMAGE_FILE_SIZE, UPLOAD_TIMEOUT } from '../../config/config';
+import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
+import { PlatformUrl } from '../../config/config';
 
 function uploadImageWithProgress(files, cb) {
     var fd = new FormData();
@@ -31,15 +33,35 @@ class Contribution extends React.Component {
             headImg: "",
             title: "",
             isLoading: false,
+            operation: "/save/",
             type: "headImg",
             width: (document.documentElement.clientWidth - 250) * 0.5,
             height: (document.documentElement.clientWidth - 250) * 0.5 * 9 / 16,
             uploadTitle: "选择文章头图",
-            uploadContent: "请插入文件小于5M，格式为png,jpg,jpeg,gif的16:9图片",
+            uploadContent: "请插入文件小于3M，格式为png,jpg,jpeg,gif的16:9图片",
         };
     }
 
     componentDidMount() {
+        if (this.props.operation) {
+            this.setState({ operation: "/update/" + this.props.operation.replace("/article/","") })
+            Axios.get(this.props.operation)
+                .then(res => {
+                    if (res.data.code === 200) {
+                        this.setState({ editorContent: res.data.content.content })
+                        this.setState({ headImg: res.data.content.headImg })
+                        this.setState({ title: res.data.content.title })
+                        editor.create()
+                        editor.txt.html(this.state.editorContent)
+                    } else {
+                        message.error(res.data.message);
+                        window.location.href = PlatformUrl;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
         const elemMenu = this.refs.editorElemMenu;
         const elemBody = this.refs.editorElemBody;
         const editor = new E(elemMenu, elemBody)
@@ -74,23 +96,22 @@ class Contribution extends React.Component {
                 }
             });
         }
-        editor.create()
-
     };
 
     render() {
-
         return (
             <ContentWrapper>
                 <div className="content" >
                     <div className="head-img">
-                        <UploadPicture getUrl={this.getUrl.bind(this)} type={this.state.type} width={this.state.width} height={this.state.height} uploadTitle={this.state.uploadTitle} uploadContent={this.state.uploadContent} />
+                        <UploadPicture getUrl={this.getUrl.bind(this)} type={this.state.type} width={this.state.width} height={this.state.height} uploadTitle={this.state.uploadTitle} uploadContent={this.state.uploadContent} url={this.state.headImg} />
                     </div>
                     <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-                        <Input placeholder="请输入标题" bordered={false} onChange={(e) => { this.setState({ title: e.target.value }) }} size="large" />
+                        <Input placeholder="请输入标题" value={this.state.title} bordered={false} onChange={(e) => { this.setState({ title: e.target.value }) }} size="large" />
                     </div>
                     <div ref="editorElemMenu" style={{ backgroundColor: '#f1f1f1', border: "1px solid #ccc" }} className="editorElem-menu"></div>
-                    <div style={{ padding: "0 10px", border: "0px solid #ccc", borderTop: "none" }} ref="editorElemBody" className="editorElem-body"></div>
+                    <div style={{ padding: "0 10px", border: "0px solid #ccc", borderTop: "none" }} ref="editorElemBody" className="editorElem-body">
+
+                    </div>
                     <Button disabled={this.state.isLoading}
                         onClick={() => {
                             if (this.state.title === '') {
@@ -108,7 +129,7 @@ class Contribution extends React.Component {
                             this.setState({
                                 isLoading: true
                             });
-                            Axios.post("/article/save/", {
+                            Axios.post("/article" + this.state.operation, {
                                 title: this.state.title,
                                 content: this.state.editorContent,
                                 headImg: this.state.headImg
@@ -117,7 +138,7 @@ class Contribution extends React.Component {
                                     //console.log(res.data);
                                     if (res.data.code === 200) {
                                         message.success("上传成功");
-                                        this.props.history.replace("/");
+                                        window.location.href = PlatformUrl
                                     } else {
                                         message.error(res.data.message);
                                     }
@@ -134,4 +155,4 @@ class Contribution extends React.Component {
         this.setState({ headImg: url });
     }
 }
-export default Contribution;
+export default withRouter(Contribution);

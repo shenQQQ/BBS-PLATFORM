@@ -52,12 +52,12 @@ class ImageClip extends React.Component {
                         ev => {
                             this.setState({ MouseDown: false });
                         }
-                    }
-                    style={{ borderStyle: "solid" }}>
+                    }>
                     <canvas className='canvasBox'
                         ref={x => this._canvas = x}
                         width={W}
                         height={H}
+                        style={{ borderStyle: "solid" }}
                     ></canvas>
                     <div className='mark'
                         style={{

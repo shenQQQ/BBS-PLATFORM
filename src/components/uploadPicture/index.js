@@ -12,15 +12,20 @@ class UploadPicture extends React.Component {
         }
     }
     render() {
-        let { stage, pic, url } = this.state;
-
+        let { stage } = this.state;
+        let imgurl = "";
+        if (this.props.url) {
+            imgurl = this.state.url === '' ? this.props.url : this.state.url
+        }else{
+            imgurl = this.state.url
+        }
         return (
             <div>
                 <div className="baseInfo" style={{ display: stage === 0 ? 'block' : 'none', }}>
-                    <div className="imgBox" onClick={() => { this.setState({ stage: 1 }) }} style={{ display: this.state.url === '' ? 'none' : 'block' }}>
-                        <img src={url} alt="" />
+                    <div className="imgBox" onClick={() => { this.setState({ stage: 1 }) }} style={{ display: imgurl === '' ? 'none' : 'block' }}>
+                        <img src={imgurl} alt="" />
                     </div>
-                    <div className="messageBox" onClick={() => { this.setState({ stage: 1 }) }} style={{ display: this.state.url === '' ? 'block' : 'none', backgroundColor: "#ccc" }}>
+                    <div className="messageBox" onClick={() => { this.setState({ stage: 1 }) }} style={{ display: imgurl === '' ? 'block' : 'none', backgroundColor: "#ccc" }}>
                         <br />
                         <p style={{ textAlign: "center" }}>{this.props.uploadTitle}</p>
                         <p style={{ textAlign: "center" }}>{this.props.uploadContent}</p>

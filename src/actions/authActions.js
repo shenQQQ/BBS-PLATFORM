@@ -1,6 +1,7 @@
 import { SET_CURRENT_USER } from "../const";
 import Axios from "../utils/axios";
 import setHeaderToken from "../utils/setHeaderToken";
+import { LocalStorageTokenName } from "../config/config";
 
 export const setCurrentUser = (user) => {
     return {
@@ -16,7 +17,7 @@ const user = {
 }
 export const logout = () =>{
     return dispatch => {
-        localStorage.removeItem("BBSToken");
+        localStorage.removeItem(LocalStorageTokenName);
         setHeaderToken(user);
         dispatch(setCurrentUser(user));
     }
