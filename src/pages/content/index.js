@@ -34,19 +34,7 @@ class Content extends React.Component {
             isCommentSendLoading: false,
             stage: true
         }
-        store.subscribe(() => {
-            //console.log('state状态改变了，新状态如下')
-            //console.log(store.getState().login)
-            let userState = store.getState().login
-            this.setState({ isAuth: userState.isAuth })
-            this.setState({ userAvatar: userState.user.avatar })
-            if (userState.user.username === this.state.username) {
-                this.setState({ isAuthor: true })
-            } else {
-                this.setState({ isAuthor: false })
-            }
-            this.isUserCollect();
-        })
+
 
     }
 
@@ -103,6 +91,17 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
+        store.subscribe(() => {
+            let userState = store.getState().login
+            this.setState({ isAuth: userState.isAuth })
+            this.setState({ userAvatar: userState.user.avatar })
+            if (userState.user.username === this.state.username) {
+                this.setState({ isAuthor: true })
+            } else {
+                this.setState({ isAuthor: false })
+            }
+            this.isUserCollect();
+        })
         Axios.get(this.props.location.pathname)
             .then(res => {
                 if (res.data.code === 200) {

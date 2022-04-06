@@ -43,25 +43,7 @@ class Contribution extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.operation) {
-            this.setState({ operation: "/update/" + this.props.operation.replace("/article/","") })
-            Axios.get(this.props.operation)
-                .then(res => {
-                    if (res.data.code === 200) {
-                        this.setState({ editorContent: res.data.content.content })
-                        this.setState({ headImg: res.data.content.headImg })
-                        this.setState({ title: res.data.content.title })
-                        editor.create()
-                        editor.txt.html(this.state.editorContent)
-                    } else {
-                        message.error(res.data.message);
-                        window.location.href = PlatformUrl;
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
+
         const elemMenu = this.refs.editorElemMenu;
         const elemBody = this.refs.editorElemBody;
         const editor = new E(elemMenu, elemBody)
@@ -95,6 +77,28 @@ class Contribution extends React.Component {
                     insertImgFn(url);
                 }
             });
+        }
+        if (this.props.operation) {
+            this.setState({ operation: "/update/" + this.props.operation.replace("/article/", "") })
+            Axios.get(this.props.operation)
+                .then(res => {
+                    if (res.data.code === 200) {
+                        this.setState({ editorContent: res.data.content.content })
+                        this.setState({ headImg: res.data.content.headImg })
+                        this.setState({ title: res.data.content.title })
+                        editor.create()
+                        editor.txt.html(this.state.editorContent)
+                    } else {
+                        message.error(res.data.message);
+                        window.location.href = PlatformUrl;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            editor.create()
+            editor.txt.html(this.state.editorContent)
         }
     };
 
