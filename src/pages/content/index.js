@@ -32,7 +32,8 @@ class Content extends React.Component {
             isCollect: false,
             isLoading: false,
             isCommentSendLoading: false,
-            stage: true
+            stage: true,
+            tagList: []
         }
 
 
@@ -89,6 +90,18 @@ class Content extends React.Component {
         )
         this.setState({ isLoading: false });
     }
+    
+    renderTag = (data) => {
+        return data.map(
+            (item) => {
+                return <Button shape="round" key={item.name} style={{marginRight:"5px"}} onClick={
+                    ()=>{
+                        window.location.href = PlatformUrl + "/tag/" + item.id
+                    }
+                }>{"#" + item.name}</Button>
+            }
+        )
+    }
 
     componentDidMount() {
         store.subscribe(() => {
@@ -105,7 +118,6 @@ class Content extends React.Component {
         Axios.get(this.props.location.pathname)
             .then(res => {
                 if (res.data.code === 200) {
-                    //console.log(res.data.content.comments)
                     this.setState({ id: res.data.content.id })
                     this.setState({ content: res.data.content.content })
                     this.setState({ head_img: res.data.content.headImg })
@@ -117,8 +129,11 @@ class Content extends React.Component {
                     this.setState({ view: res.data.content.view })
                     this.setState({ username: res.data.content.username })
                     this.setState({ comment: res.data.content.comments })
+                    this.setState({ tagList: this.renderTag(res.data.content.list) })
+                    
                     this.setState({ userAvatar: this.props.userState.user.avatar })
                     this.setState({ isAuth: this.props.userState.isAuth })
+
                     if (this.props.userState.user.username === this.state.username) {
                         this.setState({ isAuthor: true })
                     } else {
@@ -180,17 +195,17 @@ class Content extends React.Component {
                             <div className='modify' style={{ display: this.state.isAuthor ? 'block' : 'none' }}>
                                 <a onClick={() => {
                                     Axios.delete(this.props.location.pathname)
-                                    .then(res => {
-                                        if (res.data.code === 200) {
-                                           message.success("删除成功")
-                                           window.location.href = PlatformUrl;
-                                        } else {
-                                            message.error(res.data.message);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
+                                        .then(res => {
+                                            if (res.data.code === 200) {
+                                                message.success("删除成功")
+                                                window.location.href = PlatformUrl;
+                                            } else {
+                                                message.error(res.data.message);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
                                 }}>删除</a>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <a onClick={() => {
@@ -209,6 +224,8 @@ class Content extends React.Component {
                         </div>
                         {/* <ReactMarkdown children={this.state.content} remarkPlugins={[remarkGfm]} /> */}
                         <div dangerouslySetInnerHTML={{ __html: this.state.content }} />
+                        {this.state.tagList}
+                        <br/>
                         <Button icon={<StarFilled style={{ color: this.state.isCollect ? "#1890ff" : "#969faf" }} />} disabled={this.state.isLoading || !this.state.isAuth} onClick={this.state.isCollect ? this.unCollect : this.collect}>&nbsp;&nbsp;{this.state.collectCount}&nbsp;&nbsp;</Button>
                         <br />
                         <hr />

@@ -16,6 +16,9 @@ import MyArticle from './pages/myArticle';
 import MyCollect from './pages/myCollect';
 import Create from './pages/create';
 import edit from './pages/edit';
+import getConfig from './utils/getConfig';
+import getConfigration from './utils/getConfig';
+import TagPage from './pages/tagPage';
 
 const mainStyle = {
   margin: '0 0 0 250px',
@@ -24,7 +27,15 @@ const mainStyle = {
 };
 
 class App extends React.Component {
+
+  constructor() {
+    super()
+    this.state = {
+      menuData: []
+    }
+  }
   componentDidMount() {
+    getConfigration();
     authByLocalStorageToken();
   }
 
@@ -47,6 +58,7 @@ class App extends React.Component {
             <Route path="/myCollect" component={MyCollect}></Route>
             <Route path="/create" component={Create}></Route>
             <Route path="/edit" component={edit}></Route>
+            <Route path="/tag/*" component={TagPage}></Route>
           </div>
         </div>
       </Router>

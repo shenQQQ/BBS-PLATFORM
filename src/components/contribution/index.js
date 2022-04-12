@@ -24,6 +24,16 @@ function uploadImageWithProgress(files, cb) {
         }
     ).catch(error => { console.log("axios error ", error); })
 }
+function ReplaceDot(obj) {
+    var oldValue = obj.valueOf();
+    while (oldValue.indexOf("，") != -1)//寻找每一个中文逗号，并替换
+    {
+        obj = oldValue.replace("，", ",").valueOf();
+        oldValue = obj.valueOf();
+    }
+    obj = oldValue.valueOf();
+    return obj;
+}
 class Contribution extends React.Component {
 
     constructor(props) {
@@ -32,6 +42,7 @@ class Contribution extends React.Component {
             editorContent: '',
             headImg: "",
             title: "",
+            tag: "",
             isLoading: false,
             operation: "/save/",
             type: "headImg",
@@ -43,7 +54,6 @@ class Contribution extends React.Component {
     }
 
     componentDidMount() {
-
         const elemMenu = this.refs.editorElemMenu;
         const elemBody = this.refs.editorElemBody;
         const editor = new E(elemMenu, elemBody)
@@ -85,7 +95,13 @@ class Contribution extends React.Component {
                     if (res.data.code === 200) {
                         this.setState({ editorContent: res.data.content.content })
                         this.setState({ headImg: res.data.content.headImg })
-                        this.setState({ title: res.data.content.title })
+                        this.setState({ title: res.data.content.title })                        
+                        this.setState({
+                            tag:
+                            res.data.content.list.map((obj) => {
+                                    return obj.name
+                                }).join(",")
+                        })
                         editor.create()
                         editor.txt.html(this.state.editorContent)
                     } else {
@@ -112,6 +128,10 @@ class Contribution extends React.Component {
                     <div style={{ marginTop: "20px", marginBottom: "20px" }}>
                         <Input placeholder="请输入标题" value={this.state.title} bordered={false} onChange={(e) => { this.setState({ title: e.target.value }) }} size="large" />
                     </div>
+                    <hr />
+                    <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+                        <Input placeholder="请输入标签,不必输入#，标签之间请使用逗号分割" value={this.state.tag} bordered={false} onChange={(e) => { this.setState({ tag: e.target.value }) }} size="large" />
+                    </div>
                     <div ref="editorElemMenu" style={{ backgroundColor: '#f1f1f1', border: "1px solid #ccc" }} className="editorElem-menu"></div>
                     <div style={{ padding: "0 10px", border: "0px solid #ccc", borderTop: "none" }} ref="editorElemBody" className="editorElem-body">
 
@@ -136,7 +156,8 @@ class Contribution extends React.Component {
                             Axios.post("/article" + this.state.operation, {
                                 title: this.state.title,
                                 content: this.state.editorContent,
-                                headImg: this.state.headImg
+                                headImg: this.state.headImg,
+                                tag: ReplaceDot(this.state.tag)
                             }).then(
                                 res => {
                                     //console.log(res.data);

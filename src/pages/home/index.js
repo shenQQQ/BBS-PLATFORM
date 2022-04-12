@@ -17,7 +17,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get()
+        Axios.get('/article/index')
             .then(res => {
                 this.setState({ data: res.data.content.records })
                 this.setState({ total: res.data.content.total })

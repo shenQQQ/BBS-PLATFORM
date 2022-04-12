@@ -25,5 +25,4 @@ export default function authByLocalStorageToken() {
     } else {
         store.dispatch(setCurrentUser(user))
     }
-    store.dispatch(setCurrentUser(user))
 }
