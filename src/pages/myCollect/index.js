@@ -21,9 +21,14 @@ class MyCollect extends React.Component {
     componentDidMount() {
         Axios.get("/article/collect/" + this.props.userState.user.id)
             .then(res => {
-                console.log("res ", res.data)
-                this.setState({ data: res.data.content.records })
-                this.setState({ total: res.data.content.total })
+                //console.log("res ", res.data)
+                if (res.data.code === 200) {
+                    this.setState({ data: res.data.content.records })
+                    this.setState({ total: res.data.content.total })
+                } else {
+                    message.error(res.data.messgae)
+                    window.location.href = PlatformUrl
+                }
             })
             .catch(error => { console.log(error); })
     }
@@ -38,8 +43,8 @@ class MyCollect extends React.Component {
                 <div className='main'>
                     <PageHeader
                         className="site-page-header"
-                        onBack={() => {window.history.back(-1)}}
-                        title= {this.props.userState.user.username + "收藏的文章"}
+                        onBack={() => { window.history.back(-1) }}
+                        title={this.props.userState.user.username + "收藏的文章"}
                     />
                     <Card_list data={this.state.data} />
                     <div className='pagination'>

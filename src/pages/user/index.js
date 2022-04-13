@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
 import { MY_ARTICLE_PAGE_SIZE, PlatformUrl } from '../../config/config';
 
-class MyArticle extends React.Component {
+class User extends React.Component {
 
     constructor() {
         super();
@@ -19,12 +19,13 @@ class MyArticle extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get("/article/user/" + this.props.userState.user.id)
+        Axios.get(this.props.location.pathname)
             .then(res => {
                 //console.log("res ", res.data)
                 if (res.data.code === 200) {
-                    this.setState({ data: res.data.content.records })
-                    this.setState({ total: res.data.content.total })
+                    this.setState({ data: res.data.content.article.records })
+                    this.setState({ total: res.data.content.article.total })
+                    this.setState({ name: res.data.content.user.username })
                 } else {
                     message.error(res.data.messgae)
                     window.location.href = PlatformUrl
@@ -34,27 +35,23 @@ class MyArticle extends React.Component {
     }
 
     render() {
-        if (!this.props.userState.isAuth) {
-            message.error("请先登录!")
-            window.location.href = PlatformUrl
-        }
         return (
             <HomeWrapper>
                 <div className='main'>
                     <PageHeader
                         className="site-page-header"
-                        onBack={() => {window.history.back(-1)}}
-                        title="发表的文章"
+                        onBack={() => { window.history.back(-1) }}
+                        title={this.state.name + "发表的文章"}
                     />,
                     <Card_list data={this.state.data} />
                     <div className='pagination'>
                         <Pagination showQuickJumper defaultCurrent={1} total={this.state.total} onChange={(pageNumber) => {
-                            Axios.get("/article/user/" + this.props.userState.user.id, {
+                            Axios.get("this.props.location.pathname", {
                                 pageNo: pageNumber
                             })
                                 .then(res => {
-                                    this.setState({ data: res.data.content.records })
-                                    this.setState({ total: res.data.content.total })
+                                    this.setState({ data: res.data.content.article.records })
+                                    this.setState({ total: res.data.content.article.total })
                                 })
                                 .catch(error => {
                                     console.log(error);
@@ -66,10 +63,4 @@ class MyArticle extends React.Component {
         );
     }
 }
-const mapStateToProps = (state) => {
-    //console.log("state ", state);
-    return {
-        userState: state.login
-    }
-}
-export default withRouter(connect(mapStateToProps)(MyArticle));
+export default withRouter(User);

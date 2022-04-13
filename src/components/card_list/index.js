@@ -20,12 +20,14 @@ class Card_list extends React.Component {
                         dataSource={this.props.data}
                         renderItem={item => (
                             <List.Item>
-                                <Card cover={<img src={item.head_img} alt="item.title"/>}>
+                                <Card cover={<img src={item.head_img} alt="item.title" />}>
                                     <Link to={{ pathname: `/article/` + item.id }}>
                                         <Meta title={item.title} />
                                     </Link>
                                     <div className='description'>
-                                        <Avatar src={item.avatar} />
+                                        <Link to={{ pathname: `/user/` + item.user_id }}>
+                                            <Avatar src={item.avatar} />
+                                        </Link>
                                         <div>
                                             <span>{item.username}</span>
                                             <br />

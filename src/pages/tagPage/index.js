@@ -70,7 +70,7 @@ class TagPage extends React.Component {
                 <HomeWrapper>
                     <div className='pagination'>
                         <Pagination showQuickJumper defaultCurrent={1} total={this.state.total} onChange={(pageNumber) => {
-                            Axios.get('/article/index', {
+                            Axios.get(this.props.location.pathname, {
                                 params: {
                                     pageNo: pageNumber
                                 }

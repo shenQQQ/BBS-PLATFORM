@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { store } from '../../const/store';
 import Contribution from '../../components/contribution';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const { TextArea } = Input;
 
@@ -90,12 +91,12 @@ class Content extends React.Component {
         )
         this.setState({ isLoading: false });
     }
-    
+
     renderTag = (data) => {
         return data.map(
             (item) => {
-                return <Button shape="round" key={item.name} style={{marginRight:"5px"}} onClick={
-                    ()=>{
+                return <Button shape="round" key={item.name} style={{ marginRight: "5px" }} onClick={
+                    () => {
                         window.location.href = PlatformUrl + "/tag/" + item.id
                     }
                 }>{"#" + item.name}</Button>
@@ -118,7 +119,9 @@ class Content extends React.Component {
         Axios.get(this.props.location.pathname)
             .then(res => {
                 if (res.data.code === 200) {
+                    console.log(res.data.content)
                     this.setState({ id: res.data.content.id })
+                    this.setState({ userId: res.data.content.userId })
                     this.setState({ content: res.data.content.content })
                     this.setState({ head_img: res.data.content.headImg })
                     this.setState({ title: res.data.content.title })
@@ -130,7 +133,7 @@ class Content extends React.Component {
                     this.setState({ username: res.data.content.username })
                     this.setState({ comment: res.data.content.comments })
                     this.setState({ tagList: this.renderTag(res.data.content.list) })
-                    
+
                     this.setState({ userAvatar: this.props.userState.user.avatar })
                     this.setState({ isAuth: this.props.userState.isAuth })
 
@@ -183,8 +186,9 @@ class Content extends React.Component {
                         <div className='article_title'>
                             <h1>{this.state.title}</h1>
                             <div className='description'>
-                                <Avatar src={this.state.avatar} />
-
+                                <Link to={{ pathname: `/user/` + this.state.userId }}>
+                                    <Avatar src={this.state.avatar} />
+                                </Link>
                                 <div className='text'>
                                     <span>{this.state.username}</span>
                                     <br />
@@ -225,7 +229,7 @@ class Content extends React.Component {
                         {/* <ReactMarkdown children={this.state.content} remarkPlugins={[remarkGfm]} /> */}
                         <div dangerouslySetInnerHTML={{ __html: this.state.content }} />
                         {this.state.tagList}
-                        <br/>
+                        <br />
                         <Button icon={<StarFilled style={{ color: this.state.isCollect ? "#1890ff" : "#969faf" }} />} disabled={this.state.isLoading || !this.state.isAuth} onClick={this.state.isCollect ? this.unCollect : this.collect}>&nbsp;&nbsp;{this.state.collectCount}&nbsp;&nbsp;</Button>
                         <br />
                         <hr />
