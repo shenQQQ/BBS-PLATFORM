@@ -57,7 +57,7 @@ class TagPage extends React.Component {
                             <p className="container">
                                 {this.state.tagName}
                             </p>
-                            <div class="circle-shadow" style={{borderColor:getRandomColor(),backgroundColor:getRandomColor()}}></div>
+                            <div className="circle-shadow" style={{borderColor:getRandomColor(),backgroundColor:getRandomColor()}}></div>
                         </div>
                     </div>
                 </TagWrapper>

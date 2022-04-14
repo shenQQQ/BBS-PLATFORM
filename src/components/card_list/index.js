@@ -20,7 +20,7 @@ class Card_list extends React.Component {
                         dataSource={this.props.data}
                         renderItem={item => (
                             <List.Item>
-                                <Card cover={<img src={item.head_img} alt="item.title" />}>
+                                <Card cover={<img src={item.head_img} alt="item.title" />} key={item.id}>
                                     <Link to={{ pathname: `/article/` + item.id }}>
                                         <Meta title={item.title} />
                                     </Link>

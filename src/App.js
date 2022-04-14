@@ -20,6 +20,7 @@ import getConfig from './utils/getConfig';
 import getConfigration from './utils/getConfig';
 import TagPage from './pages/tagPage';
 import User from './pages/user';
+import myMessage from './pages/myMessage';
 
 const mainStyle = {
   margin: '0 0 0 250px',
@@ -57,6 +58,7 @@ class App extends React.Component {
             <Route path="/login" component={LoginPage}></Route>
             <Route path="/myArticle" component={MyArticle}></Route>
             <Route path="/myCollect" component={MyCollect}></Route>
+            <Route path="/myMessage" component={myMessage}></Route>
             <Route path="/create" component={Create}></Route>
             <Route path="/edit" component={edit}></Route>
             <Route path="/tag/*" component={TagPage}></Route>
