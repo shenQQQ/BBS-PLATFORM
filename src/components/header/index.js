@@ -7,8 +7,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../../actions/authActions";
 import { withRouter } from "react-router-dom";
-import { PlatformUrl } from "../../config/config";
-import { Button, notification } from 'antd';
+import { notification } from 'antd';
 import { Badge } from "antd";
 import { store } from '../../const/store';
 import { SmileOutlined } from '@ant-design/icons';
@@ -17,19 +16,20 @@ const { SubMenu } = Menu;
 
 const { Search } = Input;
 
-const onSearch = value => {
-    if (value === '') {
-        message.error("搜索词不能为空");
-        return;
-    }
-    window.location.href = PlatformUrl + "/searchPage?keywords=" + value;
-};
-
 class Header extends React.Component {
 
     state = {
         current: '',
         not_read: 0
+    };
+
+    onSearch = value => {
+        if (value === '') {
+            message.error("搜索词不能为空");
+            return;
+        }
+        window.location.href = this.props.globalConfig.menu.platform_address + "/searchPage?keywords=" + value;
+        //this.props.history.push({pathname:"/searchPage",state:{keywords:value}})
     };
 
     onLogout = () => {
@@ -46,7 +46,7 @@ class Header extends React.Component {
     componentDidMount = () => {
         store.subscribe(() => {
             if (this.props.userState.isAuth) {
-                this.initWebSocket("ws://localhost:8080/websocket")
+                this.initWebSocket(this.props.globalConfig.menu.websocket_address)
             }
         })
     }
@@ -59,7 +59,7 @@ class Header extends React.Component {
                 username: this.props.userState.user.username,
                 userId: this.props.userState.user.id
             }
-            sendMessage("bind",user);
+            sendMessage("bind", user);
         }
         ws.onclose = () => {
             console.log("连接关闭")
@@ -80,7 +80,7 @@ class Header extends React.Component {
                 });
             }
         }
-        function sendMessage(type,payload){
+        function sendMessage(type, payload) {
             ws.send(JSON.stringify({ type: type, payload: payload }));
         }
     }
@@ -118,7 +118,7 @@ class Header extends React.Component {
             <HeaderWrapper>
                 <div className="header">
                     <div className="search">
-                        <Search placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 400 }} />
+                        <Search placeholder="input search text" allowClear onSearch={this.onSearch} style={{ width: 400 }} />
                     </div>
 
                     <div className="menu">
@@ -136,7 +136,8 @@ class Header extends React.Component {
 const mapStateToProps = (state) => {
     //console.log("state ", state);
     return {
-        userState: state.login
+        userState: state.login,
+        globalConfig: state.globalConfig.globalConfig
     }
 }
 

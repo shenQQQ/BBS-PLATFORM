@@ -7,7 +7,6 @@ import { StarFilled } from '@ant-design/icons';
 import { Button } from 'antd';
 import { Comment, List } from 'antd';
 import getDateDiff from "../../utils/getDateDiff"
-import { PlatformUrl } from '../../config/config';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { store } from '../../const/store';
@@ -34,7 +33,8 @@ class Content extends React.Component {
             isLoading: false,
             isCommentSendLoading: false,
             stage: true,
-            tagList: []
+            tagList: [],
+            platform_address:""
         }
 
 
@@ -97,7 +97,7 @@ class Content extends React.Component {
             (item) => {
                 return <Button shape="round" key={item.name} style={{ marginRight: "5px" }} onClick={
                     () => {
-                        window.location.href = PlatformUrl + "/tag/" + item.id
+                        window.location.href = this.state.platform_address + "/tag/" + item.id
                     }
                 }>{"#" + item.name}</Button>
             }
@@ -106,6 +106,10 @@ class Content extends React.Component {
 
     componentDidMount() {
         store.subscribe(() => {
+            if (store.getState().globalConfig.globalConfig) {
+                let menu = store.getState().globalConfig.globalConfig.menu;
+                this.setState({ project_name: menu.project_name })
+            }
             let userState = store.getState().login
             this.setState({ isAuth: userState.isAuth })
             this.setState({ userAvatar: userState.user.avatar })
@@ -145,7 +149,7 @@ class Content extends React.Component {
                     this.isUserCollect()
                 } else {
                     message.error(res.data.message);
-                    window.location.href = PlatformUrl;
+                    window.location.href = this.state.platform_address;
                 }
             })
             .catch(error => {
@@ -202,7 +206,7 @@ class Content extends React.Component {
                                         .then(res => {
                                             if (res.data.code === 200) {
                                                 message.success("删除成功")
-                                                window.location.href = PlatformUrl;
+                                                window.location.href = "/";
                                             } else {
                                                 message.error(res.data.message);
                                             }
@@ -266,7 +270,8 @@ class Content extends React.Component {
 const mapStateToProps = (state) => {
     //console.log("state ", state);
     return {
-        userState: state.login
+        userState: state.login,
+        globalConfig: state.globalConfig.globalConfig
     }
 }
 export default withRouter(connect(mapStateToProps)(Content));

@@ -5,7 +5,7 @@ import { HomeWrapper } from '../home/style';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
-import { MY_ARTICLE_PAGE_SIZE, PlatformUrl } from '../../config/config';
+import { MY_ARTICLE_PAGE_SIZE } from '../../config/config';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 class MyMessage extends React.Component {
@@ -14,7 +14,7 @@ class MyMessage extends React.Component {
         super();
         this.state = {
             data: [],
-            pages: 0,
+            pages: 0
         }
     }
 
@@ -26,7 +26,7 @@ class MyMessage extends React.Component {
                     this.setState({ total: res.data.content.total })
                 } else {
                     message.error(res.data.messgae)
-                    window.location.href = PlatformUrl
+                    window.location.href = "/"
                 }
             })
             .catch(error => { console.log(error); })
@@ -35,6 +35,8 @@ class MyMessage extends React.Component {
     generateNotificationContent(content, article_id, type, username, title) {
         let action = "";
         switch (type) {
+            case "broadcast":
+                return <p>管理员发送了全站广播说：{content} </p>
             case "COMMENT":
                 action = "评论";
                 break;
@@ -50,7 +52,7 @@ class MyMessage extends React.Component {
     render() {
         if (!this.props.userState.isAuth) {
             message.error("请先登录!")
-            window.location.href = PlatformUrl
+            window.location.href = "/"
         }
         console.log(this.state.data);
         return (
@@ -71,7 +73,7 @@ class MyMessage extends React.Component {
                                     .catch(error => { console.log(error); })
                             }}>
                                 <List.Item.Meta
-                                    avatar={<Link to={{ pathname: `/user/` + item.user_id }}><Avatar src={item.avatar} /></Link>}
+                                    avatar={<Link to={{ pathname: `/user/` + item.user_id }}> {item.avatar ? <Avatar src={item.avatar} /> : null}</Link>}
                                     title={<Link to={{ pathname: `/user/` + item.user_id }}>{item.username}</Link>}
                                     description={this.generateNotificationContent(item.content, item.article_id, item.ACTION, item.username, item.title)}
                                 />

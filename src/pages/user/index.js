@@ -6,7 +6,8 @@ import { HomeWrapper } from '../home/style';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
-import { MY_ARTICLE_PAGE_SIZE, PlatformUrl } from '../../config/config';
+import { MY_ARTICLE_PAGE_SIZE} from '../../config/config';
+import { store } from '../../const/store';
 
 class User extends React.Component {
 
@@ -28,7 +29,7 @@ class User extends React.Component {
                     this.setState({ name: res.data.content.user.username })
                 } else {
                     message.error(res.data.messgae)
-                    window.location.href = PlatformUrl
+                    window.location.href = this.props.globalConfig.menu.platform_address
                 }
             })
             .catch(error => { console.log(error); })
@@ -63,4 +64,10 @@ class User extends React.Component {
         );
     }
 }
-export default withRouter(User);
+const mapStateToProps = (state) => {
+    //console.log("state ", state);
+    return {
+        globalConfig: state.globalConfig.globalConfig
+    }
+}
+export default withRouter(connect(mapStateToProps)(User));

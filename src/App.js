@@ -16,8 +16,8 @@ import MyArticle from './pages/myArticle';
 import MyCollect from './pages/myCollect';
 import Create from './pages/create';
 import edit from './pages/edit';
-import getConfig from './utils/getConfig';
 import getConfigration from './utils/getConfig';
+import getGlobalConfig from './utils/getGlobalConfig';
 import TagPage from './pages/tagPage';
 import User from './pages/user';
 import myMessage from './pages/myMessage';
@@ -37,6 +37,7 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
+    getGlobalConfig();
     getConfigration();
     authByLocalStorageToken();
   }

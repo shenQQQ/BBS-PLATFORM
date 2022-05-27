@@ -6,7 +6,8 @@ import { ContentWrapper } from "../../pages/content/style";
 import UploadPicture from '../uploadPicture';
 import { ServerUrl, MAX_UPLOAD_FILE_NUM, MAX_UPLOAD_IMAGE_FILE_SIZE, UPLOAD_TIMEOUT } from '../../config/config';
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
-import { PlatformUrl } from '../../config/config';
+import { connect } from "react-redux";
+import { store } from '../../const/store';
 
 function uploadImageWithProgress(files, cb) {
     var fd = new FormData();
@@ -49,11 +50,20 @@ class Contribution extends React.Component {
             width: (document.documentElement.clientWidth - 250) * 0.5,
             height: (document.documentElement.clientWidth - 250) * 0.5 * 9 / 16,
             uploadTitle: "选择文章头图",
-            uploadContent: "请插入文件小于3M，格式为png,jpg,jpeg,gif的16:9图片",
+            uploadContent: "",
+            max_upload_image_size: 3,
+            max_upload_file_num: 3,
+            file_upload_timeout: 3
         };
     }
 
     componentDidMount() {
+        if (this.props.globalConfig) {
+            this.setState({ max_upload_image_size: this.props.globalConfig.menu.max_upload_image_size })
+            this.setState({ max_upload_file_num: this.props.globalConfig.menu.max_upload_file_num })
+            this.setState({ file_upload_timeout: this.props.globalConfig.file_upload_timeout })
+            this.setState({ uploadContent: "请插入文件小于" + this.props.globalConfig.menu.max_upload_image_size + "M，格式为png,jpg,jpeg,gif的16:9图片" })
+        }
         const elemMenu = this.refs.editorElemMenu;
         const elemBody = this.refs.editorElemBody;
         const editor = new E(elemMenu, elemBody)
@@ -77,9 +87,9 @@ class Contribution extends React.Component {
         ]
         //editor.config.uploadImgShowBase64 = true
         editor.config.uploadImgServer = ServerUrl + '/upload';  // 上传图片到服务器
-        editor.config.uploadImgMaxSize = MAX_UPLOAD_IMAGE_FILE_SIZE * 1024 * 1024;
-        editor.config.uploadImgMaxLength = MAX_UPLOAD_FILE_NUM;
-        editor.config.uploadImgTimeout = UPLOAD_TIMEOUT;
+        editor.config.uploadImgMaxSize = this.state.max_upload_image_size * 1024 * 1024;
+        editor.config.uploadImgMaxLength = this.state.max_upload_file_num;
+        editor.config.uploadImgTimeout = this.state.file_upload_timeout;
         editor.config.customUploadImg = function (resultFiles, insertImgFn) {
             uploadImageWithProgress(resultFiles, function (data) {
                 for (var j = 0; j < data.content.urls.length; j++) {
@@ -95,10 +105,10 @@ class Contribution extends React.Component {
                     if (res.data.code === 200) {
                         this.setState({ editorContent: res.data.content.content })
                         this.setState({ headImg: res.data.content.headImg })
-                        this.setState({ title: res.data.content.title })                        
+                        this.setState({ title: res.data.content.title })
                         this.setState({
                             tag:
-                            res.data.content.list.map((obj) => {
+                                res.data.content.list.map((obj) => {
                                     return obj.name
                                 }).join(",")
                         })
@@ -106,7 +116,7 @@ class Contribution extends React.Component {
                         editor.txt.html(this.state.editorContent)
                     } else {
                         message.error(res.data.message);
-                        window.location.href = PlatformUrl;
+                        window.location.href = "/";
                     }
                 })
                 .catch(error => {
@@ -163,7 +173,7 @@ class Contribution extends React.Component {
                                     //console.log(res.data);
                                     if (res.data.code === 200) {
                                         message.success("上传成功");
-                                        window.location.href = PlatformUrl
+                                        window.location.href = "/"
                                     } else {
                                         message.error(res.data.message);
                                     }
@@ -180,4 +190,10 @@ class Contribution extends React.Component {
         this.setState({ headImg: url });
     }
 }
-export default withRouter(Contribution);
+const mapStateToProps = (state) => {
+    return {
+        userState: state.login,
+        globalConfig: state.globalConfig.globalConfig
+    }
+}
+export default withRouter(connect(mapStateToProps)(Contribution))

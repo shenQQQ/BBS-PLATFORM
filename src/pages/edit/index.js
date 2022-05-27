@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Button, Input, message } from "antd";
 import { PageHeader } from "antd";
 import Axios from "../../utils/axios";
-import { PlatformUrl } from "../../config/config";
+import { MAX_UPLOAD_IMAGE_FILE_SIZE } from "../../config/config";
 import { store } from "../../const/store";
 import { setCurrentUser } from "../../actions/authActions";
 
@@ -21,7 +21,7 @@ class Edit extends React.Component {
             width: 150,
             height: 150,
             uploadTitle: "选择用户头像",
-            uploadContent: "请插入小于3M的图片",
+            uploadContent: "",
             isUserMessageLoading: false,
             isPasswordLoading: false,
             password: '',
@@ -38,6 +38,7 @@ class Edit extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({uploadContent:"请插入文件小于" + this.props.globalConfig.menu.max_upload_image_size + "M，格式为png,jpg,jpeg,gif的16:9图片"})
         Axios.get("/user/token").then(
             res => {
                 if (res.data.code === 200) {
@@ -53,7 +54,7 @@ class Edit extends React.Component {
                     this.setState({ avatar: res.data.content.avatar });
                 } else {
                     message.error(res.data.message);
-                    window.location.href = PlatformUrl
+                    window.location.href = "/"
                 }
             }
         ).catch(error => {
@@ -129,6 +130,10 @@ class Edit extends React.Component {
     }
 
     render() {
+        if (!this.props.userState.isAuth) {
+            message.error("请先登录!")
+            window.location.href = "/"
+        }
         return (
             <div>
                 <PageHeader
@@ -191,7 +196,8 @@ class Edit extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        userState: state.login
+        userState: state.login,
+        globalConfig: state.globalConfig.globalConfig
     }
 }
 export default withRouter(connect(mapStateToProps)(Edit))

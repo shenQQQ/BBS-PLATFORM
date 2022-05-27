@@ -6,7 +6,8 @@ import { HomeWrapper } from '../home/style';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { PageHeader } from 'antd';
-import { MY_ARTICLE_PAGE_SIZE, PlatformUrl } from '../../config/config';
+import { MY_ARTICLE_PAGE_SIZE} from '../../config/config';
+import { store } from '../../const/store';
 
 class MyArticle extends React.Component {
 
@@ -27,7 +28,7 @@ class MyArticle extends React.Component {
                     this.setState({ total: res.data.content.total })
                 } else {
                     message.error(res.data.messgae)
-                    window.location.href = PlatformUrl
+                    window.location.href = "/"
                 }
             })
             .catch(error => { console.log(error); })
@@ -36,7 +37,7 @@ class MyArticle extends React.Component {
     render() {
         if (!this.props.userState.isAuth) {
             message.error("请先登录!")
-            window.location.href = PlatformUrl
+            window.location.href = "/"
         }
         return (
             <HomeWrapper>
@@ -69,7 +70,8 @@ class MyArticle extends React.Component {
 const mapStateToProps = (state) => {
     //console.log("state ", state);
     return {
-        userState: state.login
+        userState: state.login,
+        globalConfig: state.globalConfig.globalConfig
     }
 }
 export default withRouter(connect(mapStateToProps)(MyArticle));

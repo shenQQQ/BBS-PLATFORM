@@ -45,7 +45,7 @@ class SignupForm extends React.Component {
                 this.props.flashActions.addFlashMessage(
                     {
                         type: "success",
-                        text: "注册成功！"
+                        text: "注册成功！请进行登录！"
                     }
                 )
                 this.props.history.replace("/");

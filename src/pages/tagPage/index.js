@@ -1,13 +1,14 @@
 import React from "react";
 import Axios from "../../utils/axios";
 import { message } from "antd";
-import { PlatformUrl } from "../../config/config";
 import Card_list from "../../components/card_list";
 import { Pagination } from "antd";
 import { INDEX_PAGE_SIZE } from "../../config/config";
 import { HomeWrapper } from "../home/style";
 import { TagWrapper } from "./style";
 import { PageHeader } from "antd";
+import { connect } from "react-redux";
+import { store } from "../../const/store";
 
 function getRandomColor() {
     let r = Math.floor(Math.random() * 192);
@@ -27,11 +28,18 @@ class TagPage extends React.Component {
         this.state = {
             tagName: "",
             data: [],
-            pages: 0
+            pages: 0,
+            platform_address:""
         }
     }
 
     componentDidMount() {
+        store.subscribe(() => {
+            if (store.getState().globalConfig.globalConfig) {
+                let menu = store.getState().globalConfig.globalConfig.menu;
+                this.setState({ platform_address: menu.platform_address })
+            }
+        })
         Axios.get(this.props.location.pathname)
             .then(res => {
                 if (res.data.code === 200) {
@@ -41,7 +49,7 @@ class TagPage extends React.Component {
                     this.setState({ total: res.data.content.page.total })
                 } else {
                     message.error(res.data.message);
-                    window.location.href = PlatformUrl;
+                    window.location.href = this.state.platform_address;
                 }
             })
             .catch(error => {
@@ -89,4 +97,10 @@ class TagPage extends React.Component {
         )
     }
 }
-export default TagPage;
+const mapStateToProps = (state) => {
+    //console.log("state ", state);
+    return {
+        globalConfig: state.globalConfig.globalConfig
+    }
+}
+export default connect(mapStateToProps)(TagPage);

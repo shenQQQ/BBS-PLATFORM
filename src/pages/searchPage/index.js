@@ -28,9 +28,11 @@ class SearchPage extends React.Component {
     }
 
     componentDidMount() {
+       // console.log(this.props.location.state.keywords)
         console.log(getUrlParam("keywords"));
         Axios.post('/article/search', {
             keyword: getUrlParam("keywords")
+            //keyword:this.props.location.state.keywords
         })
             .then(res => {
                 this.setState({ data: res.data.content.records })

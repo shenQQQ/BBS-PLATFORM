@@ -4,7 +4,6 @@ import { Menu } from 'antd'
 import { AppstoreFilled, HomeFilled, RocketFilled, ThunderboltFilled } from '@ant-design/icons';
 import { SideBarWrapper } from "./style";
 import { Link } from "react-router-dom";
-import { PlatformUrl, ProjectName } from "../../config/config";
 import { connect } from "react-redux";
 import { store } from '../../const/store';
 import { withRouter } from "react-router-dom/cjs/react-router-dom.min";
@@ -16,6 +15,8 @@ class Side_bar extends React.Component {
         super(props)
         this.state = {
             menuList: [],
+            project_name: "",
+            platform_address:""
         }
     }
 
@@ -23,8 +24,8 @@ class Side_bar extends React.Component {
         return data.map(
             (item) => {
                 return <Menu.Item key={item.key} onClick={
-                    ()=>{
-                        window.location.href = PlatformUrl + item.key
+                    () => {
+                        window.location.href = this.state.platform_address + item.key
                     }
                 }>{item.title}</Menu.Item>
             }
@@ -33,10 +34,15 @@ class Side_bar extends React.Component {
 
     componentDidMount() {
         store.subscribe(() => {
-            if(store.getState().config.config){
-            let config = store.getState().config.config.menu;
-            const menuList = this.renderMenuData(config)
-            this.setState({ menuList : menuList})}
+            if (store.getState().config.config) {
+                let config = store.getState().config.config.menu;
+                const menuList = this.renderMenuData(config)
+                this.setState({ menuList: menuList })
+            }
+            if (store.getState().globalConfig.globalConfig) {
+                let menu = store.getState().globalConfig.globalConfig.menu;
+                this.setState({ project_name: menu.project_name })
+            }
         })
     }
 
@@ -48,7 +54,7 @@ class Side_bar extends React.Component {
                     <div className="side_bar">
                         <Link to="/home">
                             <span className="side_bar_logo">
-                                {ProjectName}
+                                {this.state.project_name}
                             </span>
                         </Link>
                         <Menu
@@ -72,7 +78,8 @@ class Side_bar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        config: state.config.config
+        config: state.config.config,
+        globalConfig: state.globalConfig.globalConfig
     }
 }
 

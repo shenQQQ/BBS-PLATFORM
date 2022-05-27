@@ -19,7 +19,6 @@ export const ContentWrapper = styled.div`
 .title_img{
     width: ${(document.body.clientWidth-250)*0.45 + "px"};
     height: ${(document.body.clientWidth-250)*0.253+ "px"};
-    background-color: blue;
 }
 .description {
     display: flex;
